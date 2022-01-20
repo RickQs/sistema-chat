@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
 <html>
-
   <head>
 
     <title>Socket.IO chat</title>
@@ -24,14 +22,13 @@
 
       #messages { list-style-type: none; margin: 0; padding: 0; }
 
-      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li { padding: 0.5rem 1rem; background-color: #fff; }
 
-      #messages > li:nth-child(odd) { background: #efefef; }
+      /* #messages > li:nth-child(odd) { background: #efefef; } */
 
     </style>
 
   </head>
-
   <body>
 
     <ul id="messages"></ul>
@@ -48,22 +45,38 @@
 
         var socket = io();
 
-        socket.on('conectado', function(msg) {
+        var nome = prompt('Qual seu nome?')
 
-            console.log(msg);
+        var messages = document.getElementById('messages')
+        var form = document.getElementById('form')
+        var input = document.getElementById('input')
+        input.focus()
 
-        });
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            if(input.value) {
+                socket.emit('chat message', {msg: input.value, nome: nome})
+                input.value = ''
+            }
+        })
 
-
-
-        socket.on('novo usuario', function(msg) {
-
-            console.log(msg);
-
-        });
+        socket.on('chat message', (obj) => {
+          if(obj.nome == nome) {
+            var item = document.createElement('li')
+            item.style.backgroundColor = 'gray'
+            item.style.textAlign = 'right'
+            item.textContent = obj.msg
+            messages.appendChild(item)
+            window.scrollTo(0, document.body.scrollHeight)
+          } else {
+            var item = document.createElement('li')
+            item.textContent = obj.nome + ': '+ obj.msg
+            messages.appendChild(item)
+            window.scrollTo(0, document.body.scrollHeight)
+          }
+        })
 
     </script>
 
   </body>
-
 </html>

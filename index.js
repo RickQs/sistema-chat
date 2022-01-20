@@ -11,6 +11,8 @@ const app = express()
 const http = createServer(app)
 const io = new Server(http)
 
+var usuarios = []
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'))
 })
@@ -18,10 +20,14 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
     // io.emit('conectado', 'Estou conectado!')
 
-    socket.broadcast.emit('novo usuario', 'Um novo usuário se conectou!')
+    // socket.broadcast.emit('novo usuario', 'Um novo usuário se conectou!')
 
-    socket.on('disconnect', () => {
-        console.log('Desconectado.')
+    socket.on('chat message', (obj) => {
+        io.emit('chat message', obj)
+    })
+
+    socket.on('disconnect', (obj) => {
+        io.emit('disconnected', obj.nome + ' saiu')
     })
 })
 
