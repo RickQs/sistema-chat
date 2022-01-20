@@ -51,7 +51,7 @@
 
         socket.on('new user', (data) => {
           if (data.success) {
-            alert('Bem-vindo ao chat!' + nome)
+            alert('Bem-vindo ao chat, ' + nome + '!')
           } else {
             alert('Já existe um usuário com este nome.')
             window.location.href = '/'

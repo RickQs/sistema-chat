@@ -12,22 +12,40 @@ const http = createServer(app)
 const io = new Server(http)
 
 var usuarios = []
+var socketIds = []
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'))
 })
 
 io.on('connection', (socket) => {
-    // io.emit('conectado', 'Estou conectado!')
+    
+    socket.on('new user', (data) => {
+        if (usuarios.indexOf(data) != -1) {
+            socket.emit('new user', {success: false})
+        } else {
+            usuarios.push(data)
+            socketIds.push(socket.id)
 
-    // socket.broadcast.emit('novo usuario', 'Um novo usuário se conectou!')
-
-    socket.on('chat message', (obj) => {
-        io.emit('chat message', obj)
+            socket.emit('new user', {success: true})
+        }
     })
 
-    socket.on('disconnect', (obj) => {
-        io.emit('disconnected', obj.nome + ' saiu')
+    socket.on('chat message', (obj) => {
+        if (usuarios.indexOf(obj.nome) != -1 && usuarios.indexOf(obj.nome) == socketIds.indexOf(socket.id)) {
+            io.emit('chat message', obj)
+        } else {
+            console.log('Erro: Você não tem permissão para executar esta ação.')
+        }
+    })
+
+    socket.on('disconnect', () => {
+        let id = socketIds.indexOf(socket.id)
+        socketIds.splice(id, 1)
+        usuarios.splice(id, 1)
+        console.log(socketIds)
+        console.log(usuarios)
+        console.log('Usuário desconectado')
     })
 })
 
