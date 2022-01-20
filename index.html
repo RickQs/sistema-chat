@@ -58,6 +58,15 @@
           }
         })
 
+        socket.on('welcome', (msg) => {
+            var item = document.createElement('li')
+            item.style.backgroundColor = 'yellow'
+            item.style.textAlign = 'center'
+            item.textContent = msg
+            messages.appendChild(item)
+            window.scrollTo(0, document.body.scrollHeight)
+        })
+
         var messages = document.getElementById('messages')
         var form = document.getElementById('form')
         var input = document.getElementById('input')

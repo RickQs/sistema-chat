@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
             socketIds.push(socket.id)
 
             socket.emit('new user', {success: true})
+            socket.broadcast.emit('welcome', data + ' entrou')
         }
     })
 
