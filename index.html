@@ -47,6 +47,17 @@
 
         var nome = prompt('Qual seu nome?')
 
+        socket.emit('new user', nome)
+
+        socket.on('new user', (data) => {
+          if (data.success) {
+            alert('Bem-vindo ao chat!' + nome)
+          } else {
+            alert('Já existe um usuário com este nome.')
+            window.location.href = '/'
+          }
+        })
+
         var messages = document.getElementById('messages')
         var form = document.getElementById('form')
         var input = document.getElementById('input')
@@ -54,14 +65,14 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault()
-            if(input.value) {
+            if (input.value) {
                 socket.emit('chat message', {msg: input.value, nome: nome})
                 input.value = ''
             }
         })
 
         socket.on('chat message', (obj) => {
-          if(obj.nome == nome) {
+          if (obj.nome == nome) {
             var item = document.createElement('li')
             item.style.backgroundColor = 'gray'
             item.style.textAlign = 'right'
