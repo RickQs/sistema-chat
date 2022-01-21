@@ -15,7 +15,7 @@ var usuarios = []
 var socketIds = []
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/index.html'))
+    res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 io.on('connection', (socket) => {
@@ -28,7 +28,7 @@ io.on('connection', (socket) => {
             socketIds.push(socket.id)
 
             socket.emit('new user', {success: true})
-            socket.broadcast.emit('welcome', data + ' entrou')
+            socket.broadcast.emit('login', data + ' entrou')
         }
     })
 
@@ -41,12 +41,14 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
+        socket.broadcast.emit('logout', usuarios[usuarios.length-1] + ' saiu')
         let id = socketIds.indexOf(socket.id)
         socketIds.splice(id, 1)
         usuarios.splice(id, 1)
         console.log(socketIds)
         console.log(usuarios)
         console.log('Usuário desconectado')
+
     })
 })
 
