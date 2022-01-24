@@ -3,10 +3,13 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import { fileURLToPath } from 'url'
 import path, { dirname } from 'path'
+import dayjs from 'dayjs'
+// import customParseFormat from 'dayjs/plugin/customParseFormat.js'
+// dayjs.extend(customParseFormat)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-
+ 
 const app = express()
 const http = createServer(app)
 const io = new Server(http)
@@ -19,6 +22,8 @@ app.get('/', (req, res) => {
 })
 
 io.on('connection', (socket) => {
+    
+    var lastHour, lastMinute = 0
     
     socket.on('new user', (data) => {
         if (usuarios.indexOf(data) != -1) {
@@ -34,12 +39,20 @@ io.on('connection', (socket) => {
 
     socket.on('chat message', (obj) => {
         if (usuarios.indexOf(obj.nome) != -1 && usuarios.indexOf(obj.nome) == socketIds.indexOf(socket.id)) {
+            let currHour = dayjs().hour()
+            let currMinute = dayjs().minute()
+            if (currHour !== lastHour || currMinute !== lastMinute) {
+                lastHour = currHour
+                lastMinute = currMinute
+                obj.time = dayjs().format("HH:mm")
+            }
             io.emit('chat message', obj)
         } else {
             console.log('Erro: Você não tem permissão para executar esta ação.')
         }
     })
 
+    // CORRIGIR USUARIO INCORRETO DESCONECTANDO
     socket.on('disconnect', () => {
         socket.broadcast.emit('logout', usuarios[usuarios.length-1] + ' saiu')
         let id = socketIds.indexOf(socket.id)

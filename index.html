@@ -11,6 +11,7 @@
     <title>Socket.IO Chat</title>
 
     <!-- paleta: https://coolors.co/0d1821-344966-b4cded-f0f4ef-bfcc94 -->
+    <!-- pegar textura para background -->
     <style>
         * {
           margin: 0;
@@ -78,6 +79,9 @@
             padding: 0.5rem 1rem;
             background-color: #b4cded;
             border-radius: 0.2rem;
+        }
+        #messages > span {
+            margin-top: 0.2rem;
         }
     </style>
 
@@ -149,11 +153,30 @@
               item.style.alignSelf = 'end'
               item.textContent = obj.msg
               messages.appendChild(item)
+              if (obj.time) {
+                var time = document.createElement('span')
+                time.textContent = obj.time
+                time.style.alignSelf = 'end'
+                time.style.color = '#b4cded'
+                item.before(time)
+              }
               window.scrollTo(0, document.body.scrollHeight)
             } else {
               var item = document.createElement('li')
-              item.textContent = obj.nome + ': '+ obj.msg
+              var usuario = document.createElement('h6')
+              var mensagem = document.createElement('p')
+              usuario.textContent = obj.nome
+              mensagem.textContent = obj.msg
+              item.appendChild(usuario)
+              item.appendChild(mensagem)
               messages.appendChild(item)
+              if (obj.time) {
+                var time = document.createElement('span')
+                time.textContent = obj.time
+                time.style.alignSelf = 'start'
+                time.style.color = '#344966'
+                item.before(time)
+              }
               window.scrollTo(0, document.body.scrollHeight)
             }
           })
