@@ -52,10 +52,9 @@ io.on('connection', (socket) => {
         }
     })
 
-    // CORRIGIR USUARIO INCORRETO DESCONECTANDO
     socket.on('disconnect', () => {
-        socket.broadcast.emit('logout', usuarios[usuarios.length-1] + ' saiu')
         let id = socketIds.indexOf(socket.id)
+        socket.broadcast.emit('logout', usuarios[id] + ' saiu')
         socketIds.splice(id, 1)
         usuarios.splice(id, 1)
         console.log(socketIds)
