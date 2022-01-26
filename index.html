@@ -146,6 +146,7 @@
           var input = document.getElementById('input')
           input.focus()
 
+          // CORRIGIR MENSAGEM APENAS COM BARRA DE ESPAÇO
           form.addEventListener('submit', (e) => {
               e.preventDefault()
               if (input.value) {
@@ -175,7 +176,7 @@
               var mensagem = document.createElement('p')
               usuario.textContent = obj.nome
               mensagem.textContent = obj.msg
-              item.appendChild(usuario)
+              obj.ultimaMsg || item.appendChild(usuario)
               item.appendChild(mensagem)
               mensagens.appendChild(item)
               if (obj.time) {
