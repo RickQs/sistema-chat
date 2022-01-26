@@ -65,7 +65,7 @@
           opacity: 0.8;
         }
 
-        #messages {
+        #mensagens {
             display: flex;
             flex-direction: column;
             align-items: start;
@@ -75,12 +75,12 @@
             overflow-y: auto;
         }
 
-        #messages > li {
+        #mensagens > li {
             padding: 0.5rem 1rem;
             background-color: #b4cded;
             border-radius: 0.2rem;
         }
-        #messages > span {
+        #mensagens > span {
             margin-top: 0.2rem;
         }
     </style>
@@ -88,7 +88,7 @@
   </head>
   <body>
  
-      <ul id="messages"></ul>
+      <ul id="mensagens"></ul>
 
       <form id="form" action="">
         <input id="input" autocomplete="off" /><button>Enviar</button>
@@ -102,9 +102,9 @@
 
           var nome = prompt('Qual seu nome?')
 
-          socket.emit('new user', nome)
+          socket.emit('novo usuario', nome)
 
-          socket.on('new user', (data) => {
+          socket.on('novo usuario', (data) => {
             if (data.success) {
               // alert('Bem-vindo ao chat, ' + nome + '!')
             } else {
@@ -119,7 +119,7 @@
               item.style.color = '#fff'
               item.style.alignSelf = 'center'
               item.textContent = msg
-              messages.appendChild(item)
+              mensagens.appendChild(item)
               window.scrollTo(0, document.body.scrollHeight)
           })
 
@@ -129,11 +129,11 @@
               item.style.color = '#fff'
               item.style.alignSelf = 'center'
               item.textContent = msg
-              messages.appendChild(item)
+              mensagens.appendChild(item)
               window.scrollTo(0, document.body.scrollHeight)
           })
 
-          var messages = document.getElementById('messages')
+          var mensagens = document.getElementById('mensagens')
           var form = document.getElementById('form')
           var input = document.getElementById('input')
           input.focus()
@@ -141,18 +141,18 @@
           form.addEventListener('submit', (e) => {
               e.preventDefault()
               if (input.value) {
-                  socket.emit('chat message', {msg: input.value, nome: nome})
+                  socket.emit('nova mensagem', {msg: input.value, nome: nome})
                   input.value = ''
               }
           })
 
-          socket.on('chat message', (obj) => {
+          socket.on('nova mensagem', (obj) => {
             if (obj.nome == nome) {
               var item = document.createElement('li')
               item.style.backgroundColor = '#f0f4ef'
               item.style.alignSelf = 'end'
               item.textContent = obj.msg
-              messages.appendChild(item)
+              mensagens.appendChild(item)
               if (obj.time) {
                 var time = document.createElement('span')
                 time.textContent = obj.time
@@ -169,7 +169,7 @@
               mensagem.textContent = obj.msg
               item.appendChild(usuario)
               item.appendChild(mensagem)
-              messages.appendChild(item)
+              mensagens.appendChild(item)
               if (obj.time) {
                 var time = document.createElement('span')
                 time.textContent = obj.time

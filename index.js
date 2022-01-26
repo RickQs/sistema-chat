@@ -25,19 +25,19 @@ io.on('connection', (socket) => {
     
     var lastHour, lastMinute = 0
     
-    socket.on('new user', (data) => {
+    socket.on('novo usuario', (data) => {
         if (usuarios.indexOf(data) != -1) {
-            socket.emit('new user', {success: false})
+            socket.emit('novo usuario', {success: false})
         } else {
             usuarios.push(data)
             socketIds.push(socket.id)
 
-            socket.emit('new user', {success: true})
+            socket.emit('novo usuario', {success: true})
             socket.broadcast.emit('login', data + ' entrou')
         }
     })
 
-    socket.on('chat message', (obj) => {
+    socket.on('nova mensagem', (obj) => {
         if (usuarios.indexOf(obj.nome) != -1 && usuarios.indexOf(obj.nome) == socketIds.indexOf(socket.id)) {
             let currHour = dayjs().hour()
             let currMinute = dayjs().minute()
@@ -46,7 +46,7 @@ io.on('connection', (socket) => {
                 lastMinute = currMinute
                 obj.time = dayjs().format("HH:mm")
             }
-            io.emit('chat message', obj)
+            io.emit('nova mensagem', obj)
         } else {
             console.log('Erro: Você não tem permissão para executar esta ação.')
         }
