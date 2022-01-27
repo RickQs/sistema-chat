@@ -44,7 +44,6 @@ io.on('connection', (socket) => {
             historicoMsgId.push(socket.id)
             ultimaMsgId = socket.id
 
-            console.log(ultimaMsgId, socket.id)
             if (historicoMsgId.length > 1 && ultimaMsgId === historicoMsgId[historicoMsgId.length - 2]) {
                 obj.ultimaMsg = true
             }
