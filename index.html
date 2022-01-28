@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <title>Socket.IO Chat</title>
 
-    <!-- paleta: https://coolors.co/0d1821-344966-b4cded-f0f4ef-bfcc94 -->
     <style>
         * {
             margin: 0;
@@ -46,6 +45,9 @@
             margin: 0.25rem;
             caret-color: #344966;
             background-color: #f0f4ef;
+        }
+        #input::placeholder {
+          text-indent: 0.156rem;
         }
 
         #input:focus {
@@ -91,7 +93,7 @@
       <ul id="mensagens"></ul>
 
       <form id="form" action="">
-        <input id="input" autocomplete="off" /><button>Enviar</button>
+        <input id="input" autocomplete="off" placeholder="Mensagem"/><button>Enviar</button>
       </form>
 
       <script src="/socket.io/socket.io.js"></script>
@@ -105,12 +107,12 @@
           socket.emit('novo usuario', nome)
 
           socket.on('novo usuario', (data) => {
-            if (data.success) {
-              // alert('Bem-vindo ao chat, ' + nome + '!')
-            } else {
-              alert('Já existe um usuário com este nome.')
-              window.location.href = '/'
-            }
+              if (data.success) {
+                  // alert('Bem-vindo ao chat, ' + nome + '!')
+              } else {
+                  alert('Já existe um usuário com este nome.')
+                  window.location.href = '/'
+              }
           })
 
           socket.on('login', (msg) => {
@@ -138,48 +140,53 @@
           var input = document.getElementById('input')
           input.focus()
 
-          // CORRIGIR MENSAGEM APENAS COM BARRA DE ESPAÇO
+          input.onkeydown = (e) => {
+              if (e.target.value.length < 1 && e.keyCode === 32) {
+                  return false
+              }
+          }
+
           form.addEventListener('submit', (e) => {
               e.preventDefault()
-              if (input.value) {
+              if (input.value && !/\s/.exec(input.value)) {
                   socket.emit('nova mensagem', {msg: input.value, nome: nome})
                   input.value = ''
               }
           })
 
           socket.on('nova mensagem', (obj) => {
-            if (obj.nome == nome) {
-              var item = document.createElement('li')
-              item.style.backgroundColor = '#f0f4ef'
-              item.style.alignSelf = 'end'
-              item.textContent = obj.msg
-              mensagens.appendChild(item)
-              if (obj.time) {
-                var time = document.createElement('span')
-                time.textContent = obj.time
-                time.style.alignSelf = 'end'
-                time.style.color = '#b4cded'
-                item.before(time)
+              if (obj.nome == nome) {
+                  var item = document.createElement('li')
+                  item.style.backgroundColor = '#f0f4ef'
+                  item.style.alignSelf = 'end'
+                  item.textContent = obj.msg
+                  mensagens.appendChild(item)
+                  if (obj.time) {
+                      var time = document.createElement('span')
+                      time.textContent = obj.time
+                      time.style.alignSelf = 'end'
+                      time.style.color = '#b4cded'
+                      item.before(time)
+                  }
+                  window.scrollTo(0, document.body.scrollHeight)
+              } else {
+                  var item = document.createElement('li')
+                  var usuario = document.createElement('h6')
+                  var mensagem = document.createElement('p')
+                  usuario.textContent = obj.nome
+                  mensagem.textContent = obj.msg
+                  obj.ultimaMsg || item.appendChild(usuario)
+                  item.appendChild(mensagem)
+                  mensagens.appendChild(item)
+                  if (obj.time) {
+                      var time = document.createElement('span')
+                      time.textContent = obj.time
+                      time.style.alignSelf = 'start'
+                      time.style.color = '#344966'
+                      item.before(time)
+                  }
+                  window.scrollTo(0, document.body.scrollHeight)
               }
-              window.scrollTo(0, document.body.scrollHeight)
-            } else {
-              var item = document.createElement('li')
-              var usuario = document.createElement('h6')
-              var mensagem = document.createElement('p')
-              usuario.textContent = obj.nome
-              mensagem.textContent = obj.msg
-              obj.ultimaMsg || item.appendChild(usuario)
-              item.appendChild(mensagem)
-              mensagens.appendChild(item)
-              if (obj.time) {
-                var time = document.createElement('span')
-                time.textContent = obj.time
-                time.style.alignSelf = 'start'
-                time.style.color = '#344966'
-                item.before(time)
-              }
-              window.scrollTo(0, document.body.scrollHeight)
-            }
           })
 
       </script>
