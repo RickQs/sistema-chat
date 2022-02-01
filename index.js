@@ -33,10 +33,9 @@ io.on('connection', (socket) => {
         } else {
             usuarios.push(usuario)
             socketIds.push(socket.id)
-            console.log(usuarios)
 
-            socket.emit('novo usuario', {sucesso: true, nome: usuario})
-            io.emit('login', {usuarios, msg: usuario + ' entrou'})
+            socket.emit('novo usuario', {sucesso: true})
+            io.emit('login', {usuarios: [...usuarios].sort(), msg: usuario + ' entrou'})
         }
     })
 
@@ -67,7 +66,7 @@ io.on('connection', (socket) => {
         let msg = usuarios[id] + ' saiu'
         socketIds.splice(id, 1)
         usuarios.splice(id, 1)
-        socket.broadcast.emit('logout', {usuarios, msg})
+        socket.broadcast.emit('logout', {usuarios: [...usuarios].sort(), msg})
         console.log(socketIds)
         console.log(usuarios)
         console.log('Usuário desconectado')

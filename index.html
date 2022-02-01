@@ -196,7 +196,6 @@
         socket.on('novo usuario', (dados) => {
             if (dados.sucesso) {
                 // alert('Bem-vindo ao chat, ' + nome + '!')
-                // integrantesGrupo.textContent = dados.nome
             } else {
                 alert('Já existe um usuário com este nome.')
                 window.location.href = '/'
@@ -204,18 +203,30 @@
         })
 
         socket.on('login', (dados) => {
-            integrantesGrupo.textContent = dados.usuarios
+            let listaUsuarios = dados.usuarios.filter((value, index) => {
+                return value != nome
+            })
+            listaUsuarios.push('Você')
+            integrantesGrupo.textContent = listaUsuarios.toString().replaceAll(',', ', ')
             var item = document.createElement('li')
             item.style.backgroundColor = '#344966'
             item.style.color = '#fff'
             item.style.alignSelf = 'center'
-            item.textContent = dados.msg
+            if (dados.msg.split(' ')[0] == nome) {
+                item.textContent = 'Você entrou'
+            } else {
+                item.textContent = dados.msg
+            }
             mensagens.appendChild(item)
             mensagens.scrollTop = mensagens.scrollHeight
         })
 
         socket.on('logout', (dados) => {
-            integrantesGrupo.textContent = dados.usuarios
+            let listaUsuarios = dados.usuarios.filter((value, index) => {
+                return value != nome
+            })
+            listaUsuarios.push('Você')
+            integrantesGrupo.textContent = listaUsuarios.toString().replaceAll(',', ', ')
             var item = document.createElement('li')
             item.style.backgroundColor = '#344966'
             item.style.color = '#fff'
