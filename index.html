@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
@@ -37,20 +39,23 @@
             backdrop-filter: blur(0.8rem);
             box-shadow: 0 0 1em #0a0a0a;
         }
+
         #infos-grupo {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 0.2rem;
         }
+
         #nome-grupo {
             color: #f0f4ef;
         }
+
         #integrantes-grupo {
             color: #b3b3b3;
             font-size: 14px;
         }
-        
+
         #fundo-icone {
             width: 3rem;
             height: 3rem;
@@ -60,6 +65,7 @@
             justify-content: center;
             border-radius: 50%;
         }
+
         #icone {
             font-size: 1.3rem;
             color: #b3b3b3;
@@ -82,15 +88,16 @@
             caret-color: #344966;
             background-color: #f0f4ef;
         }
+
         #input::placeholder {
-          text-indent: 0.156rem;
+            text-indent: 0.156rem;
         }
 
         #input:focus {
             outline: none;
         }
 
-        #form > button {
+        #form>button {
             background: #344966;
             border: none;
             padding: 0 1rem;
@@ -99,7 +106,8 @@
             outline: none;
             color: #f0f4ef;
         }
-        #form > button:hover {
+
+        #form>button:hover {
             cursor: pointer;
             opacity: 0.8;
         }
@@ -115,18 +123,20 @@
             overflow-y: auto;
         }
 
-        #mensagens > li {
+        #mensagens>li {
             padding: 0.5rem 1rem;
             background-color: #b4cded;
             border-radius: 0.2rem;
         }
-        #mensagens > span {
+
+        #mensagens>span {
             margin-top: 0.2rem;
         }
 
         ::-webkit-scrollbar {
             width: 0.3rem;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #344966;
             border-radius: 0.2rem;
@@ -134,117 +144,123 @@
         }
     </style>
 
-  </head>
-  <body>
-      <header>
-          <div id="fundo-icone">
-              <i id="icone" class="fas fa-user-friends"></i>
-          </div>
-          <div id="infos-grupo">
-              <h2 id="nome-grupo">Grupo 1</h2>
-              <p id="integrantes-grupo">Você, magrao, lp</p>
-          </div>
-      </header>
-      
-      <ul id="mensagens"></ul>
+</head>
 
-      <form id="form" action="">
-        <input id="input" autocomplete="off" placeholder="Mensagem"/><button>Enviar</button>
-      </form>
+<body>
+    <header>
+        <div id="fundo-icone">
+            <i id="icone" class="fas fa-user-friends"></i>
+        </div>
+        <div id="infos-grupo">
+            <h2 id="nome-grupo">Grupo 1</h2>
+            <p id="integrantes-grupo"></p>
+        </div>
+    </header>
 
-      <script src="/socket.io/socket.io.js"></script>
+    <ul id="mensagens"></ul>
 
-      <script>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" placeholder="Mensagem" /><button>Enviar</button>
+    </form>
 
-          var socket = io()
+    <script src="/socket.io/socket.io.js"></script>
 
-          var nome = prompt('Qual seu nome?')
+    <script>
 
-          var mensagens = document.getElementById('mensagens')
-          var form = document.getElementById('form')
-          var input = document.getElementById('input')
-          input.focus()
+        var socket = io()
 
-          input.onkeydown = (e) => {
-              if (e.target.value.length < 1 && e.keyCode === 32) {
-                  return false
-              }
-          }
+        var nome = prompt('Qual seu nome?')
 
-          form.addEventListener('submit', (e) => {
-              e.preventDefault()
-              if (input.value && !/\s/.exec(input.value)) {
-                  socket.emit('nova mensagem', {msg: input.value, nome: nome})
-                  input.value = ''
-              }
-          })
+        var integrantesGrupo = document.getElementById('integrantes-grupo')
+        var mensagens = document.getElementById('mensagens')
+        var form = document.getElementById('form')
+        var input = document.getElementById('input')
+        input.focus()
 
-          socket.emit('novo usuario', nome)
+        input.onkeydown = (e) => {
+            if (e.target.value.length < 1 && e.keyCode === 32) {
+                return false
+            }
+        }
 
-          socket.on('novo usuario', (data) => {
-              if (data.success) {
-                  // alert('Bem-vindo ao chat, ' + nome + '!')
-              } else {
-                  alert('Já existe um usuário com este nome.')
-                  window.location.href = '/'
-              }
-          })
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            if (input.value && !/\s/.exec(input.value)) {
+                socket.emit('nova mensagem', { msg: input.value, nome: nome })
+                input.value = ''
+            }
+        })
 
-          socket.on('login', (msg) => {
-              var item = document.createElement('li')
-              item.style.backgroundColor = '#344966'
-              item.style.color = '#fff'
-              item.style.alignSelf = 'center'
-              item.textContent = msg
-              mensagens.appendChild(item)
-              mensagens.scrollTop = mensagens.scrollHeight
-          })
+        socket.emit('novo usuario', nome)
 
-          socket.on('logout', (msg) => {
-              var item = document.createElement('li')
-              item.style.backgroundColor = '#344966'
-              item.style.color = '#fff'
-              item.style.alignSelf = 'center'
-              item.textContent = msg
-              mensagens.appendChild(item)
-              mensagens.scrollTop = mensagens.scrollHeight
-          })
+        socket.on('novo usuario', (dados) => {
+            if (dados.sucesso) {
+                // alert('Bem-vindo ao chat, ' + nome + '!')
+                // integrantesGrupo.textContent = dados.nome
+            } else {
+                alert('Já existe um usuário com este nome.')
+                window.location.href = '/'
+            }
+        })
 
-          socket.on('nova mensagem', (obj) => {
-              if (obj.nome == nome) {
-                  var item = document.createElement('li')
-                  item.style.backgroundColor = '#f0f4ef'
-                  item.style.alignSelf = 'end'
-                  item.textContent = obj.msg
-                  mensagens.appendChild(item)
-                  if (obj.time) {
-                      var time = document.createElement('span')
-                      time.textContent = obj.time
-                      time.style.alignSelf = 'end'
-                      time.style.color = '#b4cded'
-                      item.before(time)
-                  }
-                  mensagens.scrollTop = mensagens.scrollHeight
-              } else {
-                  var item = document.createElement('li')
-                  var usuario = document.createElement('h6')
-                  var mensagem = document.createElement('p')
-                  usuario.textContent = obj.nome
-                  mensagem.textContent = obj.msg
-                  obj.ultimaMsg || item.appendChild(usuario)
-                  item.appendChild(mensagem)
-                  mensagens.appendChild(item)
-                  if (obj.time) {
-                      var time = document.createElement('span')
-                      time.textContent = obj.time
-                      time.style.alignSelf = 'start'
-                      time.style.color = '#b4cded'
-                      item.before(time)
-                  }
-                  mensagens.scrollTop = mensagens.scrollHeight
-              }
-          })
+        socket.on('login', (dados) => {
+            integrantesGrupo.textContent = dados.usuarios
+            var item = document.createElement('li')
+            item.style.backgroundColor = '#344966'
+            item.style.color = '#fff'
+            item.style.alignSelf = 'center'
+            item.textContent = dados.msg
+            mensagens.appendChild(item)
+            mensagens.scrollTop = mensagens.scrollHeight
+        })
 
-      </script>
-  </body>
+        socket.on('logout', (dados) => {
+            integrantesGrupo.textContent = dados.usuarios
+            var item = document.createElement('li')
+            item.style.backgroundColor = '#344966'
+            item.style.color = '#fff'
+            item.style.alignSelf = 'center'
+            item.textContent = dados.msg
+            mensagens.appendChild(item)
+            mensagens.scrollTop = mensagens.scrollHeight
+        })
+
+        socket.on('nova mensagem', (obj) => {
+            if (obj.nome == nome) {
+                var item = document.createElement('li')
+                item.style.backgroundColor = '#f0f4ef'
+                item.style.alignSelf = 'end'
+                item.textContent = obj.msg
+                mensagens.appendChild(item)
+                if (obj.time) {
+                    var time = document.createElement('span')
+                    time.textContent = obj.time
+                    time.style.alignSelf = 'end'
+                    time.style.color = '#b4cded'
+                    item.before(time)
+                }
+                mensagens.scrollTop = mensagens.scrollHeight
+            } else {
+                var item = document.createElement('li')
+                var usuario = document.createElement('h6')
+                var mensagem = document.createElement('p')
+                usuario.textContent = obj.nome
+                mensagem.textContent = obj.msg
+                obj.ultimaMsg || item.appendChild(usuario)
+                item.appendChild(mensagem)
+                mensagens.appendChild(item)
+                if (obj.time) {
+                    var time = document.createElement('span')
+                    time.textContent = obj.time
+                    time.style.alignSelf = 'start'
+                    time.style.color = '#b4cded'
+                    item.before(time)
+                }
+                mensagens.scrollTop = mensagens.scrollHeight
+            }
+        })
+
+    </script>
+</body>
+
 </html>

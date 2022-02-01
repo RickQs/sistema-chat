@@ -27,15 +27,16 @@ io.on('connection', (socket) => {
     var lastHour, lastMinute = 0
     var ultimaMsgId = ''
     
-    socket.on('novo usuario', (data) => {
-        if (usuarios.indexOf(data) != -1) {
-            socket.emit('novo usuario', {success: false})
+    socket.on('novo usuario', (usuario) => {
+        if (usuarios.indexOf(usuario) != -1) {
+            socket.emit('novo usuario', {sucesso: false})
         } else {
-            usuarios.push(data)
+            usuarios.push(usuario)
             socketIds.push(socket.id)
+            console.log(usuarios)
 
-            socket.emit('novo usuario', {success: true})
-            socket.broadcast.emit('login', data + ' entrou')
+            socket.emit('novo usuario', {sucesso: true, nome: usuario})
+            io.emit('login', {usuarios, msg: usuario + ' entrou'})
         }
     })
 
@@ -63,9 +64,10 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         let id = socketIds.indexOf(socket.id)
-        socket.broadcast.emit('logout', usuarios[id] + ' saiu')
+        let msg = usuarios[id] + ' saiu'
         socketIds.splice(id, 1)
         usuarios.splice(id, 1)
+        socket.broadcast.emit('logout', {usuarios, msg})
         console.log(socketIds)
         console.log(usuarios)
         console.log('Usuário desconectado')
