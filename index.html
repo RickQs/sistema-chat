@@ -93,6 +93,7 @@
         ::-webkit-scrollbar-thumb {
             background: #344966;
             border-radius: 0.2rem;
+            padding-right: 0.5rem;
         }
     </style>
 
@@ -111,37 +112,6 @@
           var socket = io()
 
           var nome = prompt('Qual seu nome?')
-
-          socket.emit('novo usuario', nome)
-
-          socket.on('novo usuario', (data) => {
-              if (data.success) {
-                  // alert('Bem-vindo ao chat, ' + nome + '!')
-              } else {
-                  alert('Já existe um usuário com este nome.')
-                  window.location.href = '/'
-              }
-          })
-
-          socket.on('login', (msg) => {
-              var item = document.createElement('li')
-              item.style.backgroundColor = '#344966'
-              item.style.color = '#fff'
-              item.style.alignSelf = 'center'
-              item.textContent = msg
-              mensagens.appendChild(item)
-              window.scrollTo(0, document.body.scrollHeight)
-          })
-
-          socket.on('logout', (msg) => {
-              var item = document.createElement('li')
-              item.style.backgroundColor = '#344966'
-              item.style.color = '#fff'
-              item.style.alignSelf = 'center'
-              item.textContent = msg
-              mensagens.appendChild(item)
-              window.scrollTo(0, document.body.scrollHeight)
-          })
 
           var mensagens = document.getElementById('mensagens')
           var form = document.getElementById('form')
@@ -162,6 +132,37 @@
               }
           })
 
+          socket.emit('novo usuario', nome)
+
+          socket.on('novo usuario', (data) => {
+              if (data.success) {
+                  // alert('Bem-vindo ao chat, ' + nome + '!')
+              } else {
+                  alert('Já existe um usuário com este nome.')
+                  window.location.href = '/'
+              }
+          })
+
+          socket.on('login', (msg) => {
+              var item = document.createElement('li')
+              item.style.backgroundColor = '#344966'
+              item.style.color = '#fff'
+              item.style.alignSelf = 'center'
+              item.textContent = msg
+              mensagens.appendChild(item)
+              mensagens.scrollTop = mensagens.scrollHeight
+          })
+
+          socket.on('logout', (msg) => {
+              var item = document.createElement('li')
+              item.style.backgroundColor = '#344966'
+              item.style.color = '#fff'
+              item.style.alignSelf = 'center'
+              item.textContent = msg
+              mensagens.appendChild(item)
+              mensagens.scrollTop = mensagens.scrollHeight
+          })
+
           socket.on('nova mensagem', (obj) => {
               if (obj.nome == nome) {
                   var item = document.createElement('li')
@@ -176,7 +177,7 @@
                       time.style.color = '#b4cded'
                       item.before(time)
                   }
-                  window.scrollTo(0, document.body.scrollHeight)
+                  mensagens.scrollTop = mensagens.scrollHeight
               } else {
                   var item = document.createElement('li')
                   var usuario = document.createElement('h6')
@@ -190,10 +191,10 @@
                       var time = document.createElement('span')
                       time.textContent = obj.time
                       time.style.alignSelf = 'start'
-                      time.style.color = '#344966'
+                      time.style.color = '#b4cded'
                       item.before(time)
                   }
-                  window.scrollTo(0, document.body.scrollHeight)
+                  mensagens.scrollTop = mensagens.scrollHeight
               }
           })
 
