@@ -67,10 +67,6 @@ io.on('connection', (socket) => {
         socketIds.splice(id, 1)
         usuarios.splice(id, 1)
         socket.broadcast.emit('logout', {usuarios: [...usuarios].sort(), msg})
-        console.log(socketIds)
-        console.log(usuarios)
-        console.log('Usuário desconectado')
-
     })
 })
 
